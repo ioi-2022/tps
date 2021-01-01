@@ -380,13 +380,16 @@ def verify_subtasks():
 
         indexes.add(data['index'])
 
-        if not isinstance(data['score'], int) or data['score'] < 0:
-            error('score should be a non-negative integer in subtask {}'.format(name))
+        if not isinstance(data['score'], float) or data['score'] < 0:
+            error('score should be a non-negative float in subtask {}'.format(name))
         elif name == 'samples':
             if data['score'] != 0:
                 error('samples subtask score is non-zero')
         else:
             score_sum += data['score']
+
+        if not isinstance(data['score'], int):
+            warning('score is not an integer in subtask {}'.format(name))
 
         check_validator_key(data, 'validators', 'subtask', name)
 
