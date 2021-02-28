@@ -189,6 +189,18 @@ function echo_verdict {
 	boxed_echo "${color}" "${verdict}"
 }
 
+function echo_expected_verdict_message {
+	expected_verdict_message="$1"
+
+	case "${expected_verdict_message}" in
+		"match with expected") color=ok ;;
+		*expected) color=error ;;
+		*) color=other ;;
+	esac
+
+	boxed_echo "${color}" "${expected_verdict_message}"
+}
+
 function test_score_file {
 	local test_name="$1"
 	echo "${LOGS_DIR}/${test_name}.score"

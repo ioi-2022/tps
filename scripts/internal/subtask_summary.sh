@@ -35,6 +35,19 @@ if [ $# -gt 0 ]; then
     subtask_score_color="warn"
   fi
   boxed_echo "${subtask_score_color}" "${subtask_score}/${full_subtask_score} pts"
+
+  if [ $# -gt 0 ]; then    
+    expected_verdict_message="$1"; shift
+
+    hspace 2
+    export BOX_PADDING=30
+    expected_verdict_message_color="fail"
+    if [ "${expected_verdict_message}" == "match with expected" ]; then
+      expected_verdict_message_color="ok"
+    fi
+    boxed_echo "${expected_verdict_message_color}" "${expected_verdict_message}"
+  fi
+
   hspace 2
   echo "${test_name}"
 else
