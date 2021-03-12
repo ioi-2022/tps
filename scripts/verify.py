@@ -47,7 +47,8 @@ SUBTASKS_JSON_RELATIVE = get_relative(SUBTASKS_JSON)
 #TODO read these variables from problem.json
 has_markdown_statement = True
 
-git_enabled = True
+# Not enabled when development of all problems is done in a single repo, to silent problem name warning mismatch
+git_enabled = False
 git_remote_name = "origin"
 
 valid_problem_types = ('Batch', 'Communication', 'OutputOnly', 'TwoSteps')
@@ -227,6 +228,8 @@ def verify_problem():
         except subprocess.CalledProcessError:
             warning('could not get git remote url for "{}"'.format(git_remote_name))
             return
+        if prob_name != git_main_remote_name:
+            warning('problem name and git project name are not the same')
 
     check_problem_name(problem['name'])
 
