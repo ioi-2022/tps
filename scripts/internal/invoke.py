@@ -4,6 +4,7 @@ import subprocess
 
 from util import get_bool_environ, load_json, simple_usage_message, wait_process_success
 from color_util import cprint, cprinterr, colors
+from invoke_util import get_short_verdict, is_verdict_expected
 import tests_util as tu
 
 
@@ -14,44 +15,6 @@ SOLUTIONS_JSON = os.environ.get('SOLUTIONS_JSON')
 SPECIFIC_TESTS = get_bool_environ('SPECIFIC_TESTS')
 SPECIFIED_TESTS_PATTERN = os.environ.get('SPECIFIED_TESTS_PATTERN')
 SKIP_CHECK = get_bool_environ('SKIP_CHECK')
-
-
-def get_short_verdict(verdict):
-    if verdict == "Correct":
-        return "AC"
-    elif verdict == "Runtime Error":
-        return "RTE"
-    elif verdict == "Time Limit Exceeded":
-        return "TLE"
-    elif verdict == "Wrong Answer":
-        return "WA"
-    elif verdict == "Partially Correct":
-        return "OK"
-    elif verdict == "Protocol Violation":
-        return "PV"
-    else:
-        return "JE"
-
-
-def is_verdict_expected(score, verdict, expected_verdict):
-    if expected_verdict in ["correct", "model_solution"]:
-        return verdict == "Correct" and score == 1
-    elif expected_verdict == "time_limit":
-        return verdict == "Time Limit Exceeded"
-    elif expected_verdict == "memory_limit":
-        return verdict == "Runtime Error"
-    elif expected_verdict == "incorrect":
-        return verdict == "Wrong Answer"
-    elif expected_verdict == "runtime_error":
-        return verdict == "Runtime Error"
-    elif expected_verdict == "failed":
-        return verdict != "Correct" or score == 0
-    elif expected_verdict == "time_limit_and_runtime_error":
-        return verdict in ["Time Limit Exceeded", "Runtime Error"]
-    elif expected_verdict == "partially_correct":
-        return 0 < score < 1
-    else:
-        raise ValueError("Invalid verdict")
 
 
 if __name__ == '__main__':
@@ -96,7 +59,7 @@ if __name__ == '__main__':
     subtasks_data = dict(load_json(SUBTASKS_JSON))['subtasks']
     total_points = total_full_points = 0
     unmatched_verdicts = []
-    for subtask, tests in tu.get_subtasks_tests_dict_from_tests_dir(tests_dir).items():
+    for subtask_index, (subtask, tests) in enumerate(tu.get_subtasks_tests_dict_from_tests_dir(tests_dir).items()):
         subtask_result = None
         max_execution_time = None
         testcases_run = 0
@@ -128,6 +91,7 @@ if __name__ == '__main__':
             command = [
                 'bash',
                 os.path.join(INTERNALS_DIR, 'subtask_summary.sh'),
+                str(subtask_index),
                 subtask,
                 str(len(tests))
             ]
@@ -136,6 +100,7 @@ if __name__ == '__main__':
             command = [
                 'bash',
                 os.path.join(INTERNALS_DIR, 'subtask_summary.sh'),
+                str(subtask_index),
                 subtask,
                 str(len(tests)),
                 str(testcases_run),
@@ -165,6 +130,7 @@ if __name__ == '__main__':
             command = [
                 'bash',
                 os.path.join(INTERNALS_DIR, 'subtask_summary.sh'),
+                str(subtask_index),
                 subtask,
                 str(len(tests)),
                 str(testcases_run),
