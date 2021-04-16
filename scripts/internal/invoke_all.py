@@ -138,7 +138,7 @@ if __name__ == '__main__':
     else:
         cprint(colors.FAIL, "Found one or more subtasks mismatch with solutions.json")
         for solution_filename, subtask, verdict, expected_verdict in unmatched_verdicts:
-            print("[{}] subtask '{}': got '{}', expected '{}'".format(solution_filename, subtask, verdict, expected_verdict))
+            print("{:40}: got {:20}, expected '{}'".format("[{}] subtask '{}'".format(solution_filename, subtask), "'{}'".format(verdict), expected_verdict))
 
     if missing_tests:
         cprinterr(colors.WARN, "Missing {} {}!".format(len(missing_tests), "tests" if len(missing_tests) != 1 else "test"))
